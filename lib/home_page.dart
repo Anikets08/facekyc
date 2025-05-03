@@ -99,15 +99,29 @@ class _HomePageState extends State<HomePage> {
           _setFaceFeedback('🙅🏻‍♂️ Too Far!', FaceStatus.error);
         } else if (movingHeadLeftOrRight) {
           if (rotY >= 45) {
-            _setFaceFeedback(
-              "Head turned 45 degrees or more to the left",
-              FaceStatus.warning,
-            );
+            if (rotY > 60) {
+              _setFaceFeedback(
+                "Head turned too much to the left",
+                FaceStatus.error,
+              );
+            } else {
+              _setFaceFeedback(
+                "Head turned 45 degrees or more to the left",
+                FaceStatus.perfect,
+              );
+            }
           } else if (rotY <= -45) {
-            _setFaceFeedback(
-              "Head turned 45 degrees or more to the right",
-              FaceStatus.warning,
-            );
+            if (rotY < -60) {
+              _setFaceFeedback(
+                "Head turned too much to the right",
+                FaceStatus.error,
+              );
+            } else {
+              _setFaceFeedback(
+                "Head turned 45 degrees or more to the right",
+                FaceStatus.perfect,
+              );
+            }
           }
         } else if (horizontalOffset > 0.35) {
           _setFaceFeedback(
