@@ -1,6 +1,6 @@
-# Face KYC Library
+# Face KYC Application
 
-A Flutter library for implementing face detection and KYC (Know Your Customer) functionality in mobile applications. This library provides components for real-time face detection, camera handling, and face validation.
+A Flutter Application for implementing face detection and KYC (Know Your Customer) functionality.
 
 ## Components
 
