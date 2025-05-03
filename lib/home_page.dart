@@ -50,12 +50,13 @@ class _HomePageState extends State<HomePage> {
         final faceArea = faceWidth * faceHeight;
         final faceRatio = faceArea / imageArea;
 
-        bool leftEyeOpen =
+        bool rightEyeOpen =
             face.leftEyeOpenProbability != null &&
             face.leftEyeOpenProbability! > 0.85;
-        bool rightEyeOpen =
+        bool leftEyeOpen =
             face.rightEyeOpenProbability != null &&
             face.rightEyeOpenProbability! > 0.85;
+        final rotY = face.headEulerAngleY;
 
         // Calculate face position
         final faceCenterX =
@@ -80,20 +81,34 @@ class _HomePageState extends State<HomePage> {
         final imageCenterY = imageSize.height / 2;
         final horizontalOffset = (faceCenterX - imageCenter) / imageSize.width;
         final verticalOffset = (faceCenterY - imageCenterY) / imageSize.height;
+        bool movingHeadLeftOrRight = rotY != null && (rotY > 30 || rotY < -30);
         if (faces.length > 1) {
           _setFaceFeedback(
             '🙅🏻‍♂️ Multiple Faces Detected!',
             FaceStatus.error,
           );
-        } else if (!leftEyeOpen || !rightEyeOpen) {
-          _setFaceFeedback(
-            '🙅🏻‍♂️ either left or right or both eyes are closed/not visible',
-            FaceStatus.error,
-          );
+        } else if (!rightEyeOpen && !leftEyeOpen && !movingHeadLeftOrRight) {
+          _setFaceFeedback('🙅🏻‍♂️ both Eyes Closed!', FaceStatus.error);
+        } else if (!leftEyeOpen && !movingHeadLeftOrRight) {
+          _setFaceFeedback('🙅🏻‍♂️ left Eye Closed!', FaceStatus.error);
+        } else if (!rightEyeOpen && !movingHeadLeftOrRight) {
+          _setFaceFeedback('🙅🏻‍♂️ right Eye Closed!', FaceStatus.error);
         } else if (faceRatio > 0.4) {
           _setFaceFeedback('🙅🏻‍♂️ Too Close!', FaceStatus.error);
         } else if (faceRatio < 0.1) {
           _setFaceFeedback('🙅🏻‍♂️ Too Far!', FaceStatus.error);
+        } else if (movingHeadLeftOrRight) {
+          if (rotY >= 45) {
+            _setFaceFeedback(
+              "Head turned 45 degrees or more to the left",
+              FaceStatus.warning,
+            );
+          } else if (rotY <= -45) {
+            _setFaceFeedback(
+              "Head turned 45 degrees or more to the right",
+              FaceStatus.warning,
+            );
+          }
         } else if (horizontalOffset > 0.35) {
           _setFaceFeedback(
             '⚠️ Doable, but would be great if you could move a bit to Left',

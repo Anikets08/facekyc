@@ -125,7 +125,8 @@ class _CameraViewState extends State<CameraView> {
                         ? Colors.red
                         : Colors.green,
                 onPressed:
-                    widget.faceStatus != FaceStatus.perfect
+                    widget.faceStatus == FaceStatus.error ||
+                            widget.faceStatus == FaceStatus.none
                         ? null
                         : () async {
                           if (_controller == null) return;
