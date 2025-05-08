@@ -50,6 +50,9 @@ class _CameraViewState extends State<CameraView> {
 
   Future<void> _checkCameraPermission() async {
     var status = await Permission.camera.status;
+    if (status.isDenied) {
+      status = await Permission.camera.request();
+    }
     if (status.isGranted) {
       setState(() {
         cameraAllowed = true;
